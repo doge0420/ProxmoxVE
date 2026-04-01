@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 source <(curl -fsSL https://raw.githubusercontent.com/doge0420/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2026 community-scripts ORG
-# Author: [YourGitHubUsername]
+# Author: doge0420
 # License: MIT | https://github.com/doge0420/ProxmoxVE/raw/main/LICENSE
-# Source: [SOURCE_URL e.g. https://github.com/example/app]
+# Source: https://github.com/lyqht/mini-qr
 
 # ============================================================================
 # APP CONFIGURATION
@@ -11,9 +11,8 @@ source <(curl -fsSL https://raw.githubusercontent.com/doge0420/ProxmoxVE/main/mi
 # These values are sent to build.func and define default container resources.
 # Users can customize these during installation via the interactive prompts.
 # ============================================================================
-
-APP="[AppName]"
-var_tags="${var_tags:-[category1];[category2]}" # Max 2 tags, semicolon-separated
+APP="[MiniQR]"
+var_tags="${var_tags:-QRcode;}"                 # Max 2 tags, semicolon-separated
 var_cpu="${var_cpu:-2}"                         # CPU cores: 1-4 typical
 var_ram="${var_ram:-2048}"                      # RAM in MB: 512, 1024, 2048, etc.
 var_disk="${var_disk:-8}"                       # Disk in GB: 6, 8, 10, 20 typical
@@ -52,78 +51,52 @@ function update_script() {
   check_container_resources
 
   # Step 1: Verify installation exists
-  if [[ ! -d /opt/[appname] ]]; then
+  if [[ ! -d /opt/mini-qr ]]; then
     msg_error "No ${APP} Installation Found!"
     exit
   fi
 
   # Step 2: Check if update is available
-  if check_for_gh_release "[appname]" "YourUsername/YourRepo"; then
+  if check_for_gh_release "mini-qr" "lyqht/mini-qr"; then
 
     # Step 3: Stop services before update
     msg_info "Stopping Service"
-    systemctl stop [appname]
+    systemctl stop caddy
     msg_ok "Stopped Service"
 
     # Step 4: Backup critical data before overwriting
-    msg_info "Backing up Data"
-    cp -r /opt/[appname]/data /opt/[appname]_data_backup 2>/dev/null || true
-    msg_ok "Backed up Data"
+    # msg_info "Backing up Data"
+    # cp -r /opt/mini-qr /opt/mini-qr_backup 2>/dev/null || true
+    # msg_ok "Backed up Data"
 
     # Step 5: Download and deploy new version
     # CLEAN_INSTALL=1 removes old directory before extracting
-    CLEAN_INSTALL=1 fetch_and_deploy_gh_release "[appname]" "owner/repo" "tarball" "latest" "/opt/[appname]"
+    CLEAN_INSTALL=1 fetch_and_deploy_gh_release "mini-qr" "lyqht/mini-qr" "tarball" "latest" "/opt/mini-qr"
 
     # Step 6: Run post-update commands (uncomment as needed)
-    # These examples show common patterns - use what applies to your app:
-    #
-    # For Node.js apps:
-    # msg_info "Installing Dependencies"
-    # cd /opt/[appname]
-    # $STD npm ci --production
-    # msg_ok "Installed Dependencies"
-    #
-    # For Python apps:
-    # msg_info "Installing Dependencies"
-    # cd /opt/[appname]
-    # $STD uv sync --frozen
-    # msg_ok "Installed Dependencies"
-    #
-    # For database migrations:
-    # msg_info "Running Database Migrations"
-    # cd /opt/[appname]
-    # $STD npm run migrate
-    # msg_ok "Ran Database Migrations"
-    #
-    # For PHP apps:
-    # msg_info "Installing Dependencies"
-    # cd /opt/[appname]
-    # $STD composer install --no-dev
-    # msg_ok "Installed Dependencies"
+    msg_info "Installing Dependencies"
+    cd /opt/mini-qr || exit
+    $STD pnpm ci --production
+    msg_ok "Installed Dependencies"
+
+    msg_info "Building MiniQR"
+    $STD pnpm run build
+    msg_ok "Built MiniQR"
 
     # Step 7: Restore data from backup
-    msg_info "Restoring Data"
-    cp -r /opt/[appname]_data_backup/. /opt/[appname]/data/ 2>/dev/null || true
-    rm -rf /opt/[appname]_data_backup
-    msg_ok "Restored Data"
+    # msg_info "Restoring Data"
+    # cp -r /opt/[appname]_data_backup/. /opt/[appname]/data/ 2>/dev/null || true
+    # rm -rf /opt/[appname]_data_backup
+    # msg_ok "Restored Data"
 
     # Step 8: Restart service with new version
     msg_info "Starting Service"
-    systemctl start [appname]
+    systemctl start caddy
     msg_ok "Started Service"
     msg_ok "Updated successfully!"
   fi
   exit
 }
-
-# ============================================================================
-# MAIN EXECUTION - Container creation flow
-# ============================================================================
-# These are called by build.func and handle the full installation process:
-#   1. start              - Initialize container creation
-#   2. build_container    - Execute the install script inside container
-#   3. description        - Display completion info and access details
-# ============================================================================
 
 start
 build_container
