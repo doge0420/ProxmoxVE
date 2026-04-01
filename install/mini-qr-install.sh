@@ -20,7 +20,7 @@ $STD apt install -y \
   fontconfig
 msg_ok "Installed Dependencies"
 
-NODE_VERSION="22" setup_nodejs
+NODE_VERSION="20" setup_nodejs
 
 fetch_and_deploy_gh_release "mini-qr" "lyqht/mini-qr" "tarball" "latest" "/opt/mini-qr"
 
@@ -53,9 +53,28 @@ cat <<EOF >/etc/caddy/Caddyfile
 :80 {
     root * /opt/mini-qr/dist
     file_server
+
+    # Handle client-side routing
+    try_files {path} /index.html
+
+    # Cache static assets
+    @assets {
+        path /assets/*
+    }
+    header @assets Cache-Control "public, immutable, max-age=31536000"
+
+    # Correct MIME types for JS modules
+    @jsmodules {
+        path *.js *.mjs
+    }
+    header @jsmodules Content-Type "application/javascript"
 }
 EOF
 systemctl enable -q --now caddy
+
+msg_info "Reloading Caddy"
+systemctl reload caddy
+msg_ok "Reloaded Caddy"
 
 msg_ok "Configured Caddy"
 
