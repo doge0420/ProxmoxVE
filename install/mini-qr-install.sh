@@ -20,7 +20,7 @@ $STD apt install -y \
   fontconfig
 msg_ok "Installed Dependencies"
 
-NODE_VERSION="22" NODE_MODULE="pnpm" setup_nodejs
+NODE_VERSION="22" setup_nodejs
 
 fetch_and_deploy_gh_release "mini-qr" "lyqht/mini-qr" "tarball" "latest" "/opt/mini-qr"
 
@@ -43,8 +43,8 @@ msg_info "Building MiniQR"
 
 cd /opt/mini-qr || exit
 
-$STD pnpm ci
-$STD pnpm run build
+$STD npm ci
+$STD npm run build
 
 msg_ok "Built MiniQR"
 
