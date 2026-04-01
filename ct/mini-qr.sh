@@ -11,7 +11,7 @@ source <(curl -fsSL https://raw.githubusercontent.com/doge0420/ProxmoxVE/main/mi
 # These values are sent to build.func and define default container resources.
 # Users can customize these during installation via the interactive prompts.
 # ============================================================================
-APP="MiniQR"
+APP="Mini-QR"
 var_tags="${var_tags:-QRcode;}"                 # Max 2 tags, semicolon-separated
 var_cpu="${var_cpu:-2}"                         # CPU cores: 1-4 typical
 var_ram="${var_ram:-2048}"                      # RAM in MB: 512, 1024, 2048, etc.
