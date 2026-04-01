@@ -76,11 +76,11 @@ function update_script() {
     # Step 6: Run post-update commands (uncomment as needed)
     msg_info "Installing Dependencies"
     cd /opt/mini-qr || exit
-    $STD pnpm ci
+    $STD npm ci
     msg_ok "Installed Dependencies"
 
     msg_info "Building MiniQR"
-    $STD pnpm run build
+    $STD npm run build
     msg_ok "Built MiniQR"
 
     # Step 7: Restore data from backup
