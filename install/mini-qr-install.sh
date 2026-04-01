@@ -43,7 +43,7 @@ msg_info "Building MiniQR"
 
 cd /opt/mini-qr || exit
 
-$STD pnpm ci --production
+$STD pnpm ci
 $STD pnpm run build
 
 msg_ok "Built MiniQR"

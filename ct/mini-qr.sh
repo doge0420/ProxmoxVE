@@ -76,7 +76,7 @@ function update_script() {
     # Step 6: Run post-update commands (uncomment as needed)
     msg_info "Installing Dependencies"
     cd /opt/mini-qr || exit
-    $STD pnpm ci --production
+    $STD pnpm ci
     msg_ok "Installed Dependencies"
 
     msg_info "Building MiniQR"
