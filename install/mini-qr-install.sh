@@ -24,21 +24,6 @@ NODE_VERSION="20" setup_nodejs
 
 fetch_and_deploy_gh_release "mini-qr" "lyqht/mini-qr" "tarball" "latest" "/opt/mini-qr"
 
-msg_info "Setting up MiniQR"
-
-cat <<EOF >/opt/mini-qr/.env
-BASE_PATH=./
-VITE_HIDE_CREDITS="false"
-VITE_DEFAULT_PRESET=""
-VITE_DEFAULT_DATA_TO_ENCODE=""
-VITE_QR_CODE_PRESETS="[]"
-VITE_FRAME_PRESET=""
-VITE_FRAME_PRESETS="[]"
-VITE_DISABLE_LOCAL_STORAGE="false"
-EOF
-
-msg_ok "Set up MiniQR"
-
 msg_info "Building MiniQR"
 
 cd /opt/mini-qr || exit
