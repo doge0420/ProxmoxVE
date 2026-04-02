@@ -27,7 +27,7 @@ fetch_and_deploy_gh_release "mini-qr" "lyqht/mini-qr" "tarball" "latest" "/opt/m
 msg_info "Setting up MiniQR"
 
 cat <<EOF >/opt/mini-qr/.env
-BASE_PATH=/
+BASE_PATH=./
 VITE_HIDE_CREDITS="false"
 VITE_DEFAULT_PRESET=""
 VITE_DEFAULT_DATA_TO_ENCODE=""
